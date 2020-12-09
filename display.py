@@ -1,18 +1,26 @@
 from flask import Flask, render_template, Response
 import cv2 as cv
+import threading
+
+lock = threading.Lock()
+
 app = Flask(__name__)
 camera = cv.VideoCapture(0)
 
-def gen_frames(time=0):
+def gen_frames():
+    global lock
     while True:
-        success,frame = camera.read()
-        if not success:
-            break
-        else:
-            ret,buffer = cv.imencode('.jpg',frame)
-            frame = buffer.tobytes()
-            yield(b'--frame\r\n'
-                  b'Content-Type: image/jpeg\r\n\r\n'+frame+b'\r\n')
+        with lock:
+            success,frame = camera.read()
+            if not success:
+                break
+            else:
+                ret,buffer = cv.imencode('.jpg',frame)
+                if not ret:
+                    continue
+                frame = buffer.tobytes()
+                yield(b'--frame\r\n'
+                      b'Content-Type: image/jpeg\r\n\r\n'+frame+b'\r\n')
 
 @app.route('/')
 def index():
