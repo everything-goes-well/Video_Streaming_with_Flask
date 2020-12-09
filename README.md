@@ -11,7 +11,6 @@ https://blog.miguelgrinberg.com/post/video-streaming-with-flask
 	1. 通过`host`参数实现主机访问VMware虚拟机
 
 	1. Ubuntu1604浏览器无法正常显示监控(app.run里关闭调试模式，或者设置use_reloader = False即可)
-	
 	1.播放本地视频报错`Assertion fctx->async_lock failed at libavcodec/pthread_frame.c:155`
 
 - 待解决问题：
